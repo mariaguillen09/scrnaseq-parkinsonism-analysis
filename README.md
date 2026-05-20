@@ -8,21 +8,13 @@ Within each script there is information about the functions of each section, as 
 
 ---
 
-## 1. First steps
+## 1. Cell Ranger Analysis
 
 Samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior to running these scripts. Cell Ranger performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices (`.h5` format).
 
-The 16 samples were distributed across **4 pools** of 4 samples each and multiplexed using the **GEM-X Flex Gene Expression Human 4-plex** kit. Cell Ranger output directories (one per pool) serve as input for the analysis pipeline.
-
-To begin, load the count matrices and run **Part 1** using the raw Cell Ranger output:
-
-```r
-rmarkdown::render("scripts/Part_1_Preprocessing_QC_Integration.Rmd")
-```
-
 ---
 
-## 2. Analysis pipeline
+## 2. R Analysis pipeline
 
 ### Part 1 — Preprocessing, Quality Control & Batch Integration
 
@@ -109,7 +101,7 @@ This script performs all downstream analyses on the annotated object, including 
 ## 4. Workflow
 
 <p align="center">
-  <img src="figures/workflow.png" width="55%">
+  <img src="figures/Pipeline_CellRanger_R.png" width="55%">
 </p>
 
 ---
@@ -118,7 +110,7 @@ This script performs all downstream analyses on the annotated object, including 
 
 ### R version
 ```
-R >= 4.5.0
+R >= 4.5.2
 ```
 
 ### Packages
@@ -129,7 +121,7 @@ R >= 4.5.0
 | Batch correction | `harmony`, `batchelor` (FastMNN) |
 | Annotation | `SingleR`, `celldex`, `Azimuth` |
 | Differential expression | `DESeq2` |
-| Visualization | `ggplot2`, `pheatmap`, `ComplexHeatmap`, `ggvenn`, `patchwork`, `ggpubr` |
+| Visualization | `ggplot2`, `pheatmap`, `ggvenn`, `patchwork`, `ggpubr` |
 | Gene signatures | `msigdbr` |
 | Utilities | `tidyverse`, `openxlsx`, `lisi`, `future` |
 
@@ -142,7 +134,7 @@ install.packages(c("Seurat", "ggplot2", "tidyverse", "openxlsx",
 
 # Bioconductor
 BiocManager::install(c("scDblFinder", "SingleR", "celldex",
-                       "DESeq2", "ComplexHeatmap", "batchelor"))
+                       "DESeq2", "batchelor"))
 
 # GitHub
 remotes::install_github("satijalab/seurat-wrappers")
