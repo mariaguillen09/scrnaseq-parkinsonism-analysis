@@ -10,7 +10,14 @@ Within each script there is information about the functions of each section, as 
 
 ## 1. Cell Ranger Analysis
 
-Samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior to running these scripts. Cell Ranger performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices (`.h5` format).
+Samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior to running these scripts. Cell Ranger performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices. Output is provided as compressed 
+archives (`.tar.gz`) containing the three standard sparse matrix components:
+
+- `barcodes.tsv.gz` — cell barcode identifiers
+- `features.tsv.gz` — gene identifiers (gene name + Ensembl ID)
+- `matrix.mtx.gz` — UMI count matrix in sparse format
+
+These files are read into R using `Read10X()` from Seurat.
 
 ---
 
