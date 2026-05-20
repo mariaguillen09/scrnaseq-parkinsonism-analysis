@@ -101,7 +101,7 @@ This script performs all downstream analyses on the annotated object, including 
 ## 4. Workflow
 
 <p align="center">
-  <img src="figures/Pipeline_CellRanger_R.png" width="55%">
+  <img src="Pipeline_CellRanger_R.png" width="55%">
 </p>
 
 ---
