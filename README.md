@@ -117,7 +117,7 @@ R >= 4.5.2
 
 | Category | Packages |
 |---|---|
-| Single-cell analysis | `Seurat >= 5.4.0`, `SeuratWrappers`, `scDblFinder >= 2.0.3` |
+| Single-cell analysis | `Seurat >= 5.5.0`, `SeuratWrappers`, `scDblFinder >= 2.0.3` |
 | Batch correction | `harmony`, `batchelor` (FastMNN) |
 | Annotation | `SingleR`, `celldex`, `Azimuth` |
 | Differential expression | `DESeq2` |
