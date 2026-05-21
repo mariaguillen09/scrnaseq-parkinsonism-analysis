@@ -1,5 +1,5 @@
 # Single-cell transcriptomic profiling of peripheral immune cells in genetically stratified Parkinson’s disease and progressive supranuclear palsy
-These scripts were developed for the characterization of peripheral immune dysregulation in Parkinson's disease (PD) and Progressive Supranuclear Palsy (PSP) using single-cell RNA sequencing (scRNA-seq) of PBMCs. The aim is to identify cell-type-specific transcriptomic signatures, differentially expressed genes (DEGs) and inflammatory profiles across diagnostic groups, including sporadic PD, monogenic PD (GBA and LRRK2 variants), PSP and healthy controls (HC). For a better understanding of the steps and tools used, refer to the [[Workflow](Pipeline_CellRanger_R.png)]
+These scripts were developed for the characterization of peripheral immune dysregulation in Parkinson's disease (PD) and Progressive Supranuclear Palsy (PSP) using single-cell RNA sequencing (scRNA-seq) of PBMCs. The aim is to identify cell-type-specific transcriptomic signatures, differentially expressed genes (DEGs) and inflammatory profiles across diagnostic groups, including sporadic PD, monogenic PD (GBA and LRRK2 variants), PSP and healthy controls (HC). For a better understanding of the steps and tools used, refer to the [[Workflow](workflow.png)]
 
 Within each script there is information about the functions of each section, as well as the parameters and filters applied.
 
@@ -108,7 +108,7 @@ This script performs all downstream analyses on the annotated object, including 
 ## 4. Workflow
 
 <p align="center">
-  <img src="Pipeline_CellRanger_R.png" width="55%">
+  <img src="workflow.png" width="55%">
 </p>
 
 ---
