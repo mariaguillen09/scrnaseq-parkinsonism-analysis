@@ -7,7 +7,7 @@ Within each script there is information about the functions of each section, as 
 [@mariaguillen09](https://www.github.com/mariaguillen09)
 
 
-## 1. Cell Ranger Analysis
+## 1. Cell Ranger Preprocessing
 
 Samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior to running these scripts. Cell Ranger performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices. Output is provided as compressed 
 archives (`.tar.gz`) containing the three standard sparse matrix components:
