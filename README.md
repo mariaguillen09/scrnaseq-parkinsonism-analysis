@@ -6,7 +6,6 @@ Within each script there is information about the functions of each section, as 
 ## Author
 [@mariaguillen09](https://www.github.com/mariaguillen09)
 
----
 
 ## 1. Cell Ranger Analysis
 
@@ -19,7 +18,6 @@ archives (`.tar.gz`) containing the three standard sparse matrix components:
 
 These files are read into R using `Read10X()` from Seurat.
 
----
 
 ## 2. R Analysis pipeline
 
@@ -42,8 +40,6 @@ This script loads the raw count matrices from 10x Genomics format and performs a
 
 **Output:** `Results/Integrated_Seurat_Object.rds`
 
----
-
 ### Part 2 — Cell Type Annotation
 
 **Script:** `scripts/Part_2_Cell_Type_Annotation.Rmd`
@@ -63,7 +59,6 @@ This script annotates the cell clusters identified in Part 1 using a combination
 
 **Output:** `Results/Final_Annotated_Seurat_Object.rds`
 
----
 
 ### Part 3 — Downstream Analysis
 
@@ -79,13 +74,10 @@ This script performs all downstream analyses on the annotated object, including 
 - **Venn diagrams:** Shared and exclusive DEGs across comparisons, stratified by myeloid and lymphoid lineages (`ggvenn`)
 - **Sample-level heatmaps:** Z-score expression of lineage DEGs across 16 individual samples:
   - Pseudobulk per sample, LogNormalize, Z-score per gene
-  - Genes with >50% zero expression removed
   - Hierarchical clustering: ward.D2, correlation distance (`pheatmap`)
-- **Inflammatory module score:** `HALLMARK_INFLAMMATORY_RESPONSE` signature from MSigDB scored with `AddModuleScore`; Wilcoxon tests performed at sample level (mean score per sample) to avoid pseudoreplication
 
 **Output:** `Results/Final_Analyzed_Seurat_Object.rds`, `Results/DEGs_pseudobulk.xlsx`
 
----
 
 ## 3. Data exploration and visualization
 
@@ -101,9 +93,7 @@ This script performs all downstream analyses on the annotated object, including 
 | Relative abundance barplot | Part 3 | Cell type proportions by diagnosis |
 | Venn diagrams | Part 3 | Shared/exclusive DEGs by lineage |
 | Sample-level heatmaps | Part 3 | Z-score DEG expression across 16 samples |
-| Inflammatory score violin | Part 3 | HALLMARK_INFLAMMATORY_RESPONSE by cell type and diagnosis |
 
----
 
 ## 4. Workflow
 
@@ -111,7 +101,6 @@ This script performs all downstream analyses on the annotated object, including 
   <img src="Workflow.jpg" width="55%">
 </p>
 
----
 
 ## 5. Dependencies
 
@@ -129,7 +118,6 @@ R >= 4.5.2
 | Annotation | `SingleR`, `celldex`, `Azimuth` |
 | Differential expression | `DESeq2` |
 | Visualization | `ggplot2`, `pheatmap`, `ggvenn`, `patchwork`, `ggpubr` |
-| Gene signatures | `msigdbr` |
 | Utilities | `tidyverse`, `openxlsx`, `lisi`, `future` |
 
 ### Installation
