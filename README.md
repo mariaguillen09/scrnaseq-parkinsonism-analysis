@@ -33,7 +33,7 @@ This script loads the raw count matrices from 10x Genomics format and performs a
   - nCount_RNA < 15,000
   - percent.mt < 5% and percent.hb < 5%
 - **Doublet detection:** Doublets are identified and removed using `scDblFinder`
-- **Normalization & HVG selection:** LogNormalize (scale factor 10,000) and selection of 2,000 highly variable genes using `vst`, applied per pool layer
+- **Normalization and High Variable Genes (HVG) selection:** LogNormalize (scale factor 10,000) and selection of 2,000 highly variable genes using `vst`, applied per pool layer
 - **Dimensionality reduction:** Scaling, PCA (21 PCs, 90% variance), and UMAP
 - **Batch correction:** Three integration methods are evaluated — Harmony, RPCA and FastMNN — and their quality is assessed using the **LISI** index (pool LISI and cluster LISI). **RPCA** is selected as the final integration method
 - **Clustering:** Leiden algorithm (resolution 0.3) via `FindClusters`
