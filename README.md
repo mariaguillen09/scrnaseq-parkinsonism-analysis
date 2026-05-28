@@ -95,7 +95,7 @@ The pipeline relies on standard R versioning (*R* >= 4.5.2) and several *R* pack
 
 The following packages are essential for the execution of the R scripts in this repository:
 - Single-cell analysis: *Seurat*, *SeuratWrappers*, *scDblFinder*
-- Batch correction: *batchelor*, *lisi*
+- Batch correction: *batchelor*, *harmony*, *lisi*
 - Cell Type Annotation: *SingleR*, *celldex*, *Azimuth*
 - Differential expression: *DESeq2*
 - Statistical testing: *rstatix*
@@ -108,7 +108,7 @@ The following packages are essential for the execution of the R scripts in this 
 # CRAN
 install.packages(c("Seurat", "ggplot2", "tidyverse", "openxlsx", 
                    "patchwork", "ggvenn", "ggpubr", "pheatmap", 
-                   "rstatix", "RColorBrewer", "future"))
+                   "rstatix", "RColorBrewer", "future", "harmony"))
 
 # Bioconductor
 if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
