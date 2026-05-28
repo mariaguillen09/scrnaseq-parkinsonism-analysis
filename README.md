@@ -40,7 +40,7 @@ This script loads the count matrices obtained from Cell Ranger and performs all 
 - **Normalization and High Variable Genes (HVGs) selection:** LogNormalize (scale factor 10,000) and selection of 2,000 highly variable genes using `vst`, applied per pool layer.
 - **Dimensionality reduction:** Scaling and PCA (21 principal components)
 - **Batch correction:** Three integration methods are evaluated (Harmony, RPCA and FastMNN) and their quality is assessed using the **LISI** index (pool LISI and cluster LISI). **RPCA** is selected as the final integration method.
-- **Clustering:** Leiden algorithm (resolution 0.3) via `FindClusters` function.
+- **Clustering and visualization:** Leiden algorithm (resolution 0.3) via `FindClusters` function and visualization of clusters (UMAP).
 
 **Output:** `Results/Integrated_Seurat_Object.rds`
 
