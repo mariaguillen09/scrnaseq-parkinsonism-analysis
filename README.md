@@ -3,18 +3,18 @@ This repository provides a standardized, end-to-end bioinformatic pipeline for t
 
 The scripts were developed for the identification of immune cell-type-specific transcriptomic signatures across diagnostic groups, including sporadic PD (sPD), Genetic PD (gPD; carrying GBA and LRRK2 variants), PSP and healthy controls (HC). 
 
-First, samples were processed using **`Cell Ranger` v9.0.0** (10x Genomics) prior to running these scripts. `Cell Ranger` performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices. Output is provided as compressed archives (`.tar.gz`) containing the three standard sparse matrix components:
+First, samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior to running these scripts. Cell Ranger performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices. Output is provided as compressed archives (tar.gz) containing the three standard sparse matrix components:
 
-- `barcodes.tsv.gz` — cell barcode identifiers.
-- `features.tsv.gz` — gene identifiers (gene name + Ensembl ID).
-- `matrix.mtx.gz` — UMI count matrix in sparse format.
+- barcodes.tsv.gz: cell barcode identifiers.
+- features.tsv.gz: gene identifiers (gene name + Ensembl ID).
+- matrix.mtx.gz: unique molecular identifier (UMI) count matrix in sparse format.
 
-For each sample, these files are read into R using `Read10X()` from `Seurat`.
+For each sample, these files are read into R using `Read10X()` from Seurat.
 
 R Analysis is organized into three stages to ensure reproducibility:
 
 1. Preprocessing, Quality Control and Integration: rigorous quality filtering ($nFeature$, $nCount$, mitochondrial/hemoglobin pertentage content) and doublet removal. Then, to remove technical bath effect due to the processing pools, RPCA method was used after comparing the 3 different methods (harmony, RPCA and FastMMN) using LISI package.
-2. Cell Type Annotation: Automatic cell-type annotation via SingleR and Azimuth, validated by canonical marker gene expression through FindAllMarkers seurat's function.
+2. Cell Type Annotation: Automatic cell-type annotation via SingleR and Azimuth, validated by canonical marker gene expression through `FindAllMarkers()` seurat's function.
 3. Downstream Analysis: Pseudobulk differential expression analysis using DESeq2 to identify disease-specific signatures, lineage-based Venn diagram generation, and hierarchical clustering based on differential expressed genes for each lineage of individual samples.
 
 Within each script there is information about the functions of each section, as well as the parameters and filters applied. For a better understanding of the steps and tools used, refer to the [[Workflow](Workflow.jpg)]
