@@ -29,7 +29,7 @@ Within each script there is information about the functions of each section, as 
 
 **Script:** `scripts/Part_1_Preprocessing_QC_Integration.Rmd`
 
-This script loads the count matrices obtained from `Cell Ranger` and performs all preprocessing steps prior to cell type annotation.
+This script loads the count matrices obtained from Cell Ranger and performs all preprocessing steps prior to cell type annotation.
 
 - **Data loading:** Individual Seurat objects are created per sample with associated metadata (diagnosis, pool, sample ID) with Read10X and CreateSeuratObject functions from Seurat package.
 - **Quality control:** QC metrics are calculated per cell (`nFeature_RNA`, `nCount_RNA`, `percent.mt`, `percent.hb`) and filters are applied:
