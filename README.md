@@ -1,4 +1,4 @@
-# Single-cell transcriptomic profiling of peripheral immune cells in genetically stratified Parkinson’s disease and progressive supranuclear palsy
+## Single-cell transcriptomic profiling of peripheral immune cells in genetically stratified Parkinson’s disease and progressive supranuclear palsy
 This repository provides a standardized, end-to-end bioinformatic pipeline for the analysis of single-cell RNA sequencing (scRNA-seq) data from Peripheral Blood Mononuclear Cells (PBMCs).
 
 The scripts were developed for the identification of immune cell-type-specific transcriptomic signatures across diagnostic groups, including sporadic PD (sPD), Genetic PD (gPD; carrying GBA and LRRK2 variants), PSP and healthy controls (HC). 
