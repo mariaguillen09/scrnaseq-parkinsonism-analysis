@@ -16,7 +16,7 @@ First, samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior 
 - features.tsv.gz: gene identifiers (gene name + Ensembl ID).
 - matrix.mtx.gz: unique molecular identifier (UMI) count matrix in sparse format.
 
-For each sample, these files are read into R using `Read10X()` from Seurat.
+For each sample, these files are read into *R* using `Read10X()` from *Seurat*.
 
 ## 2. R Analysis Scripts
 
@@ -26,13 +26,13 @@ R Analysis is organized into three stages to ensure reproducibility:
 2. **Cell Type Annotation**: Automatic cell-type annotation via SingleR and Azimuth, validated by canonical marker gene expression through `FindAllMarkers()` seurat's function.
 3. **Downstream Analysis**: Pseudobulk differential expression analysis using DESeq2 to identify disease-specific signatures, lineage-based Venn diagram generation, and hierarchical clustering based on differential expressed genes (DEGs) for each lineage of individual samples.
 
-### Part 1 — Preprocessing, Quality Control and Batch Integration
+### Part 1: Preprocessing, Quality Control and Batch Integration
 
 **Script:** `scripts/Part_1_Preprocessing_QC_Integration.Rmd`
 
 This script loads the count matrices obtained from Cell Ranger and performs all preprocessing steps prior to cell type annotation.
 
-- **Data loading:** Individual Seurat objects are created per sample with associated metadata (diagnosis, pool, sample ID) with Read10X and CreateSeuratObject functions from Seurat package.
+- **Data loading:** Individual *Seurat* objects are created per sample with associated metadata (diagnosis, pool, sample ID) with Read10X and CreateSeuratObject functions from *Seurat* package.
 - **Quality control:** QC metrics are calculated per cell (`nFeature_RNA`, `nCount_RNA`, `percent.mt`, `percent.hb`) and filters are applied:
   - 200 < nFeature_RNA < 5,500
   - nCount_RNA < 15,000
@@ -91,7 +91,7 @@ This script performs all downstream analyses on the annotated object, including 
 
 ## 5. Dependencies
 
-The pipeline relies on standard R versioning (R >= 4.5.2) and several R packages for the single-cell analysis.
+The pipeline relies on standard R versioning (*R* >= 4.5.2) and several *R* packages for the single-cell analysis.
 
 The following packages are essential for the execution of the R scripts in this repository:
 - Single-cell analysis: *Seurat*, *SeuratWrappers*, *scDblFinder*
