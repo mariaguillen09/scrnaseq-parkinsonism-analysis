@@ -89,7 +89,7 @@ This script performs all downstream analyses on the annotated object, including 
   <img src="Workflow.jpg" width="55%">
 </p>
 
-## 5. Dependencies
+## 4. Dependencies
 
 The pipeline relies on standard R versioning (*R* >= 4.5.2) and several *R* packages for the single-cell analysis.
 
@@ -101,7 +101,7 @@ The following packages are essential for the execution of the R scripts in this 
 - Visualization: *ggplot2*, *pheatmap*, *ggvenn*, *patchwork*, *ggpubr*
 - Utilities: *tidyverse*, *openxlsx*, *future*
 
-### Installation
+#### Installation
 
 ```r
 # CRAN
