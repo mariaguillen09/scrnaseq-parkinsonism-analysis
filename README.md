@@ -98,20 +98,21 @@ The following packages are essential for the execution of the R scripts in this 
 - Batch correction: *batchelor*, *lisi*
 - Cell Type Annotation: *SingleR*, *celldex*, *Azimuth*
 - Differential expression: *DESeq2*
-- Visualization: *ggplot2*, *pheatmap*, *ggvenn*, *patchwork*, *ggpubr*
+- Statistical testing: *rstatix*
+- Visualization: *ggplot2*, *pheatmap*, *ggvenn*, *patchwork*, *ggpubr*, *RColorBrewer*
 - Utilities: *tidyverse*, *openxlsx*, *future*
 
 #### Installation
 
 ```r
 # CRAN
-install.packages(c("Seurat", "ggplot2", "tidyverse", "openxlsx",
-                   "patchwork", "ggvenn", "ggpubr", "pheatmap"))
+install.packages(c("Seurat", "ggplot2", "tidyverse", "openxlsx", 
+                   "patchwork", "ggvenn", "ggpubr", "pheatmap", 
+                   "rstatix", "RColorBrewer", "future"))
 
 # Bioconductor
 if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
-BiocManager::install(c("scDblFinder", "SingleR", "celldex",
-                       "DESeq2", "batchelor"))
+BiocManager::install(c("scDblFinder", "SingleR", "celldex", "DESeq2", "batchelor"))
 
 # GitHub
 if (!require("remotes", quietly = TRUE)) install.packages("remotes")
