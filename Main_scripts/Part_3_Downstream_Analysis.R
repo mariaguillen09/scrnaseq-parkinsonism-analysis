@@ -269,31 +269,27 @@ if (length(de_results) > 0) {
 # Venn diagrams show overlap in differentially expressed genes between different 
 # comparisons.
 
-## 3.1 Venn Diagrams: Pathologies vs Healthy Control
+### 3.1 Venn Diagrams: Pathologies vs Healthy Control
 if (nrow(final_de_table) > 0) {
   cat("Creating Venn diagrams for pathologies vs HC\n")
-  
   lineages_config <- list(
     Myeloid = list(
       celltypes = c("Monocytes", "Dendritic-cells"),
-      colors = c("#FDF2E9", "#E67E22", "#D35400")
+      colors = c("#F2CC8F", "#E67E22", "#D35400")
     ),
     Lymphoid = list(
       celltypes = c("T-CD4-cells", "T-CD8-cells", "NK-cells", "B-cells"),
-      colors = c("#F4ECF7", "#8E44AD", "#5B2C6F")
-    )
-  )
+      colors = c("#D7BDE2", "#8E44AD", "#5B2C6F")
+  ))
   
   pathology_comparisons <- c("sporadic-PD_vs_HC", "Genetic-PD_vs_HC", "PSP_vs_HC")
   
   for (lineage_name in names(lineages_config)) {
     lineage_info <- lineages_config[[lineage_name]]
-    celltypes <- lineage_info$celltypes
-    colors <- lineage_info$colors
+    celltypes    <- lineage_info$celltypes
+    lineage_cols <- lineage_info$colors
     
-    # Extract genes for each pathology
     genes_by_pathology <- list()
-    
     for (comp in pathology_comparisons) {
       pathology_name <- gsub("_vs_HC", "", comp)
       
@@ -307,32 +303,28 @@ if (nrow(final_de_table) > 0) {
       }
     }
     
-    # Create Venn diagram if we have at least 2 pathologies
     if (length(genes_by_pathology) >= 2) {
       venn_plot <- ggvenn(
         genes_by_pathology,
-        columns = names(genes_by_pathology),
-        fill_color = colors[1:length(genes_by_pathology)],
+        fill_color = lineage_cols[1:length(genes_by_pathology)],
         stroke_color = "grey40",
         stroke_size = 0.8,
         set_name_size = 5,
         text_size = 5,
         show_percentage = TRUE
       ) +
-        labs(
-          title = paste("DEG Overlap:", lineage_name, "Lineage")
-        ) +
-        theme_void(base_family = "Helvetica") +
+        labs(title = paste("DEG Overlap:", lineage_name, "Lineage")) +
+        theme_void() +
         theme(
-          plot.title = element_text(face = "bold", size = 12, hjust = 0.5, margin = margin(b = 5)),
-          plot.margin = margin(15, 15, 15, 15)
+          plot.title = element_text(face = "bold", size = 14, hjust = 0.5, margin = margin(b = 10)),
+          plot.margin = margin(20, 20, 20, 20)
         )
       
       ggsave(
         filename = paste0("Figures/Venn_HC/Venn_", lineage_name, "_vs_HC.png"),
         plot = venn_plot,
-        width = 6,
-        height = 5,
+        width = 7,
+        height = 6,
         dpi = 300,
         bg = "white"
       )
@@ -340,22 +332,19 @@ if (nrow(final_de_table) > 0) {
   }
 }
 
-## 3.2 Venn Diagrams: Cross-diagnostic comparisons
+
+### 3.2 Venn Diagrams: Cross-diagnostic comparisons
 if (nrow(final_de_table) > 0) {
   cat("Creating Venn diagrams for comparisons between pathologies...\n")
   
-  pathology_comparisons <- c(
-    "sporadic-PD_vs_Genetic-PD",
-    "sporadic-PD_vs_PSP",
-    "Genetic-PD_vs_PSP"
-  )
+  pathology_comparisons <- c("sporadic-PD_vs_Genetic-PD", "sporadic-PD_vs_PSP", 
+                             "Genetic-PD_vs_PSP")
   
   for (lineage_name in names(lineages_config)) {
     lineage_info <- lineages_config[[lineage_name]]
-    celltypes <- lineage_info$celltypes
-    colors <- lineage_info$colors
+    celltypes    <- lineage_info$celltypes
+    lineage_cols <- lineage_info$colors
     
-    # Extract genes for each comparison
     genes_by_comparison <- list()
     
     for (comp in pathology_comparisons) {
@@ -365,43 +354,36 @@ if (nrow(final_de_table) > 0) {
         unique()
       
       if (length(genes_union) > 0) {
-        genes_by_comparison[[comp]] <- genes_union
+        name_clean <- gsub("_", " ", comp) %>% gsub(" vs ", " vs\n", .)
+        genes_by_comparison[[name_clean]] <- genes_union
       }
     }
     
-    # Create Venn diagram if we have at least 2 comparisons
     if (length(genes_by_comparison) >= 2) {
-      formatted_names <- names(genes_by_comparison) %>%
-        gsub("_", " ", .) %>% gsub(" vs ", " vs\n", .)
-      
-      names(genes_by_comparison) <- formatted_names
-      
       venn_plot <- ggvenn(
         genes_by_comparison,
-        columns = names(genes_by_comparison),
-        fill_color = colors[1:length(genes_by_comparison)],
+        fill_color = lineage_cols[1:length(genes_by_comparison)],
         stroke_color = "grey40",
         stroke_size = 0.8,
-        set_name_size = 6,    
-        text_size = 7,
+        set_name_size = 5,
+        text_size = 6,
         show_percentage = TRUE
-      ) + 
+      ) +
         theme_void() +
-        theme(plot.margin = margin(t = 30, r = 20, b = 20, l = 20))
-      
+        theme(plot.margin = margin(t = 20, r = 20, b = 20, l = 20))
+     
       title_plot <- ggplot() + 
-        annotate("text", x = 1, y = 1, label = paste("DEGs Overlap:", lineage_name, "Lineage"), 
-                 fontface = "bold", size = 7) + 
+        annotate("text", x = 1, y = 1, label = paste("DEGs Overlap:", 
+        lineage_name, "Lineage"), fontface = "bold", size = 6) + 
         theme_void()
+      
       final_plot <- title_plot / venn_plot + plot_layout(heights = c(0.1, 1))
       
       ggsave(
-        filename = paste0("Figures/Venn_Pathology/Venn_", lineage_name, "_PathologyComparisons.png"),
+        filename = paste0("Figures/Venn_Pathology/Venn_", lineage_name, 
+                          "_PathologyComparisons.png"),
         plot = final_plot,
-        width = 8,
-        height = 8,
-        dpi = 300,
-        bg = "white"
+        width = 8, height = 8, dpi = 300, bg = "white"
       )
     }
   }
@@ -430,7 +412,6 @@ heatmap_colors <- colorRampPalette(
 )(100)
 
 # Manual mapping of pseudobulk sample IDs to diagnosis groups
-# (pseudobulk uses '-' separator from AggregateExpression)
 sample_diagnosis <- c(
   "HC-A"    = "HC",           "HC-B"    = "HC",
   "HC-C"    = "HC",           "HC-D"    = "HC",
@@ -458,113 +439,45 @@ lineages <- list(
 
 
 ## 4.2 Heatmap function
-make_heatmap <- function(obj, df, celltypes_seurat, celltypes_table,
-                         lineage_name, outfile) {
+make_heatmap <- function(obj, df, celltypes_seurat, celltypes_table, lineage_name, outfile) {
   
-  # Step 1: Extract DEG gene list 
-  genes_sig <- df %>%
-    filter(cell_type %in% celltypes_table) %>%
-    pull(gene) %>%
-    unique()
+  # 1. Extraer genes
+  genes_sig <- df %>% filter(cell_type %in% celltypes_table) %>% pull(gene) %>% unique()
   
-  message(sprintf("[%s] %d unique DEGs extracted.", lineage_name, length(genes_sig)))
-  if (length(genes_sig) < 2) {
-    message("fewer than 2 genes.")
-    return(invisible(NULL))
-  }
+  if (length(genes_sig) < 2) return(invisible(NULL))
   
-  # Step 2: Pseudobulk per sample 
+  # 2. Pseudobulk y Normalización
   Idents(obj) <- "final_annotation"
-  sub <- subset(obj, idents = celltypes_seurat)
+  pb <- AggregateExpression(subset(obj, idents = celltypes_seurat), 
+                            group.by = "id_tecnico", assays = "RNA", 
+                            return.seurat = TRUE)
+  pb <- NormalizeData(pb, normalization.method = "LogNormalize", 
+                      scale.factor = 10000, verbose = FALSE)
   
-  pb <- AggregateExpression(
-    sub,
-    group.by      = "id_tecnico",
-    assays        = "RNA",
-    return.seurat = TRUE
-  )
+  # 3. Preparar matriz
+  exp_mat <- as.matrix(GetAssayData(pb, assay = "RNA", layer = "data")
+                       [intersect(genes_sig, rownames(pb)), ])
+  z_mat   <- t(scale(t(exp_mat)))
   
-  # Step 3: Normalize 
-  pb <- NormalizeData(pb,
-                      normalization.method = "LogNormalize",
-                      scale.factor = 10000,
-                      verbose = FALSE)
+  # Limitar valores extremos para el color
+  z_mat[z_mat > 2] <- 2; z_mat[z_mat < -2] <- -2
   
-  exp_mat <- GetAssayData(pb, assay = "RNA", layer = "data")
+  # 4. Metadatos de columnas
+  muestras <- colnames(z_mat)
+  sample_meta <- data.frame(Diagnosis = factor(sample_diagnosis[muestras], 
+                 levels = c("HC", "sporadic-PD", "Genetic-PD", "PSP")),
+                 row.names = muestras)
   
-  # Step 4: Filter to DEG genes 
-  genes_present <- intersect(genes_sig, rownames(exp_mat))
-  message(sprintf("[%s] %d / %d DEGs found in expression matrix.",
-                  lineage_name, length(genes_present), length(genes_sig)))
-  
-  if (length(genes_present) < 2) {
-    message("fewer than 2 DEGs found in matrix.")
-    return(invisible(NULL))
-  }
-  
-  exp_mat <- as.matrix(exp_mat[genes_present, ])
-  
-  # Remove genes with >50% zeros
-  pct_zeros <- rowMeans(exp_mat == 0)
-  exp_mat   <- exp_mat[pct_zeros <= 0.50, ]
-  n_genes <- nrow(exp_mat)
-  
-  if (n_genes < 2) {
-    message("fewer than 2 genes after filtering.")
-    return(invisible(NULL))
-  }
-  
-  z_mat <- t(scale(t(exp_mat)))
-  z_mat[is.nan(z_mat)] <- 0
-  z_mat[is.na(z_mat)]  <- 0
-  z_mat[z_mat >  2]    <-  2  
-  z_mat[z_mat < -2]    <- -2  
-  
-  muestras    <- colnames(z_mat)
-  sample_meta <- data.frame(
-    Diagnosis = factor(sample_diagnosis[muestras],
-                       levels = c("HC", "sporadic-PD", "Genetic-PD", "PSP")),
-    row.names = muestras
-  )
-  
-  # Bold column labels
-  bold_colnames <- lapply(muestras, function(x) bquote(bold(.(x))))
-  
-  # Plot
+  # 5. Plot
   pheatmap(
-    mat                      = z_mat,
-    color                    = heatmap_colors,
-    scale                    = "none",
-    breaks                   = seq(-2, 2, length.out = 101),
-    
-    # Clustering
-    cluster_cols             = TRUE,
-    clustering_distance_cols = "correlation",
-    clustering_method        = "ward.D2",
-    cluster_rows             = TRUE,
+    mat = z_mat, color = heatmap_colors, scale = "none", breaks = seq(-2, 2, 
+    length.out = 101), cluster_cols = TRUE, clustering_distance_cols = "correlation", 
+    clustering_method = "ward.D2", cluster_rows = TRUE, 
     clustering_distance_rows = "correlation",
-    
-    # Annotations
-    annotation_col           = sample_meta,
-    annotation_colors        = annotation_colors,
-    
-    # Labels
-    show_rownames            = (n_genes <= 80),
-    show_colnames            = TRUE,
-    labels_col               = as.expression(bold_colnames),
-    fontsize                 = 18,
-    fontsize_col             = 15,
-    fontsize_row             = 15,
-    angle_col                = "45",
-    
-    # Aesthetics
-    border_color             = "#EFEFEF",
-    main                     = sprintf("%s Lineage",
-                                       lineage_name, n_genes),
-    # Save
-    filename                 = outfile,
-    width                    = 10,
-    height                   = 12
+    annotation_col = sample_meta, annotation_colors = annotation_colors,
+    show_rownames = TRUE, show_colnames = TRUE, fontsize = 14,
+    angle_col = "45", main = paste(lineage_name, "Lineage"),
+    filename = outfile, width = 10, height = 12
   )
 }
 
