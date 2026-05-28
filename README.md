@@ -1,42 +1,46 @@
 # Single-cell transcriptomic profiling of peripheral immune cells in genetically stratified Parkinson’s disease and progressive supranuclear palsy
-These scripts were developed for the characterization of peripheral immune dysregulation in genetically stratified Parkinson's disease (PD) and Progressive Supranuclear Palsy (PSP) using single-cell RNA sequencing (scRNA-seq) data from Peripheral Blood Mononuclear Cells (PBMCs). The aim is to identify cell-type-specific transcriptomic signatures, differentially expressed genes (DEGs) and inflammatory profiles across diagnostic groups, including sporadic PD, monogenic PD (GBA and LRRK2 variants), PSP and healthy controls (HC). For a better understanding of the steps and tools used, refer to the [[Workflow](Workflow.jpg)]
+This repository provides a standardized, end-to-end bioinformatic pipeline for the end-to-end analysis of single-cell RNA sequencing (scRNA-seq) data from Peripheral Blood Mononuclear Cells (PBMCs).
 
-Within each script there is information about the functions of each section, as well as the parameters and filters applied.
+The scripts were developed for the identification of immune cell-type-specific transcriptomic signatures across diagnostic groups, including sporadic PD (sPD), Genetic PD (gPD; carrying GBA and LRRK2 variants), PSP and healthy controls (HC). 
+
+First, samples were processed using **`Cell Ranger` v9.0.0** (10x Genomics) prior to running these scripts. `Cell Ranger` performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices. Output is provided as compressed archives (`.tar.gz`) containing the three standard sparse matrix components:
+
+- `barcodes.tsv.gz` — cell barcode identifiers.
+- `features.tsv.gz` — gene identifiers (gene name + Ensembl ID).
+- `matrix.mtx.gz` — UMI count matrix in sparse format.
+
+For each sample, these files are read into R using `Read10X()` from `Seurat`.
+
+R Analysis is organized into three stages to ensure reproducibility:
+
+1. Preprocessing, Quality Control and Integration: rigorous quality filtering ($nFeature$, $nCount$, mitochondrial/hemoglobin pertentage content) and doublet removal. Then, to remove technical bath effect due to the processing pools, RPCA method was used after comparing the 3 different methods (harmony, RPCA and FastMMN) using LISI package.
+2. Cell Type Annotation: Automatic cell-type annotation via SingleR and Azimuth, validated by canonical marker gene expression through FindAllMarkers seurat's function.
+3. Downstream Analysis: Pseudobulk differential expression analysis using DESeq2 to identify disease-specific signatures, lineage-based Venn diagram generation, and hierarchical clustering based on differential expressed genes for each lineage of individual samples.
+
+Within each script there is information about the functions of each section, as well as the parameters and filters applied. For a better understanding of the steps and tools used, refer to the [[Workflow](Workflow.jpg)]
 
 ## Author
 [@mariaguillen09](https://www.github.com/mariaguillen09)
 
 
-## 1. Cell Ranger Preprocessing
+## `R` Analysis Scripts
 
-Samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior to running these scripts. Cell Ranger performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices. Output is provided as compressed 
-archives (`.tar.gz`) containing the three standard sparse matrix components:
-
-- `barcodes.tsv.gz` — cell barcode identifiers
-- `features.tsv.gz` — gene identifiers (gene name + Ensembl ID)
-- `matrix.mtx.gz` — UMI count matrix in sparse format
-
-These files are read into R using `Read10X()` from Seurat.
-
-
-## 2. R Analysis pipeline
-
-### Part 1 — Preprocessing, Quality Control & Batch Integration
+### Part 1 — Preprocessing, Quality Control and Batch Integration
 
 **Script:** `scripts/Part_1_Preprocessing_QC_Integration.Rmd`
 
-This script loads the raw count matrices from 10x Genomics format and performs all preprocessing steps prior to cell type annotation.
+This script loads the count matrices obtained from `Cell Ranger` and performs all preprocessing steps prior to cell type annotation.
 
-- **Data loading:** Individual Seurat objects are created per sample with associated metadata (diagnosis, pool, sample ID)
+- **Data loading:** Individual Seurat objects are created per sample with associated metadata (diagnosis, pool, sample ID) with Read10X and CreateSeuratObject functions from Seurat package.
 - **Quality control:** QC metrics are calculated per cell (`nFeature_RNA`, `nCount_RNA`, `percent.mt`, `percent.hb`) and filters are applied:
   - 200 < nFeature_RNA < 5,500
   - nCount_RNA < 15,000
   - percent.mt < 5% and percent.hb < 5%
 - **Doublet detection:** Doublets are identified and removed using `scDblFinder`
-- **Normalization and High Variable Genes (HVG) selection:** LogNormalize (scale factor 10,000) and selection of 2,000 highly variable genes using `vst`, applied per pool layer
-- **Dimensionality reduction:** Scaling, PCA (21 PCs, 90% variance), and UMAP
-- **Batch correction:** Three integration methods are evaluated — Harmony, RPCA and FastMNN — and their quality is assessed using the **LISI** index (pool LISI and cluster LISI). **RPCA** is selected as the final integration method
-- **Clustering:** Leiden algorithm (resolution 0.3) via `FindClusters`
+- **Normalization and High Variable Genes (HVGs) selection:** LogNormalize (scale factor 10,000) and selection of 2,000 highly variable genes using `vst`, applied per pool layer.
+- **Dimensionality reduction:** Scaling and PCA (21 principal components)
+- **Batch correction:** Three integration methods are evaluated (Harmony, RPCA and FastMNN) and their quality is assessed using the **LISI** index (pool LISI and cluster LISI). **RPCA** is selected as the final integration method.
+- **Clustering:** Leiden algorithm (resolution 0.3) via `FindClusters` function.
 
 **Output:** `Results/Integrated_Seurat_Object.rds`
 
