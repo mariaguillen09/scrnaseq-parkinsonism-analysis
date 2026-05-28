@@ -3,6 +3,13 @@ This repository provides a standardized, end-to-end bioinformatic pipeline for t
 
 The scripts were developed for the identification of immune cell-type-specific transcriptomic signatures across diagnostic groups, including sporadic PD (sPD), Genetic PD (gPD; carrying GBA and LRRK2 variants), PSP and healthy controls (HC). 
 
+Within each script there is information about the functions of each section, as well as the parameters and filters applied. For a better understanding of the steps and tools used, refer to the [Workflow](Workflow.jpg).
+
+## Author
+[@mariaguillen09](https://www.github.com/mariaguillen09)
+
+
+## 1. First Step: Cell Ranger Preprocessing
 First, samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior to running these scripts. Cell Ranger performed read alignment to the **GRCh38-2024-A** reference genome using STAR, barcode filtering, UMI counting, and generation of filtered count matrices. Output is provided as compressed archives (tar.gz) containing the three standard sparse matrix components:
 
 - barcodes.tsv.gz: cell barcode identifiers.
@@ -11,19 +18,13 @@ First, samples were processed using **Cell Ranger v9.0.0** (10x Genomics) prior 
 
 For each sample, these files are read into R using `Read10X()` from Seurat.
 
+## 2. R Analysis Scripts
+
 R Analysis is organized into three stages to ensure reproducibility:
 
-1. Preprocessing, Quality Control and Integration: rigorous quality filtering ($nFeature$, $nCount$, mitochondrial/hemoglobin percentage content) and doublet removal. Then, to remove technical batch effect due to the processing pools, RPCA method was used after comparing the 3 different methods (harmony, RPCA and FastMNN) using LISI package.
-2. Cell Type Annotation: Automatic cell-type annotation via SingleR and Azimuth, validated by canonical marker gene expression through `FindAllMarkers()` seurat's function.
-3. Downstream Analysis: Pseudobulk differential expression analysis using DESeq2 to identify disease-specific signatures, lineage-based Venn diagram generation, and hierarchical clustering based on differential expressed genes for each lineage of individual samples.
-
-Within each script there is information about the functions of each section, as well as the parameters and filters applied. For a better understanding of the steps and tools used, refer to the [Workflow](Workflow.jpg).
-
-## Author
-[@mariaguillen09](https://www.github.com/mariaguillen09)
-
-
-## R Analysis Scripts
+1. **Preprocessing, Quality Control and Integration**: rigorous quality filtering ($nFeature$, $nCount$, mitochondrial/hemoglobin percentage content) and doublet removal. Then, to remove technical batch effect due to the processing pools, RPCA method was used after comparing the 3 different methods (harmony, RPCA and FastMNN) using LISI package.
+2. **Cell Type Annotation**: Automatic cell-type annotation via SingleR and Azimuth, validated by canonical marker gene expression through `FindAllMarkers()` seurat's function.
+3. **Downstream Analysis**: Pseudobulk differential expression analysis using DESeq2 to identify disease-specific signatures, lineage-based Venn diagram generation, and hierarchical clustering based on differential expressed genes (DEGs) for each lineage of individual samples.
 
 ### Part 1 — Preprocessing, Quality Control and Batch Integration
 
@@ -40,7 +41,7 @@ This script loads the count matrices obtained from Cell Ranger and performs all 
 - **Normalization and High Variable Genes (HVGs) selection:** LogNormalize (scale factor 10,000) and selection of 2,000 highly variable genes using `vst`, applied per pool layer.
 - **Dimensionality reduction:** Scaling and PCA (21 principal components)
 - **Batch correction:** Three integration methods are evaluated (Harmony, RPCA and FastMNN) and their quality is assessed using the **LISI** index (pool LISI and cluster LISI). **RPCA** is selected as the final integration method.
-- **Clustering and visualization:** Leiden algorithm (resolution 0.3) via `FindClusters` function and visualization of clusters (UMAP).
+- **Clustering and visualization:** Leiden algorithm (resolution 0.3) via `FindClusters()` function and visualization of clusters via UMAP.
 
 **Output:** `Results/Integrated_Seurat_Object.rds`
 
@@ -68,9 +69,9 @@ This script annotates the cell clusters identified in Part 1 using a combination
 
 **Script:** `scripts/Part_3_Downstream_Analysis.Rmd`
 
-This script performs all downstream analyses on the annotated object, including differential expression, visualization and inflammatory scoring.
+This script performs all downstream analyses on the annotated object, including differential expression, venn diagrams by lineage and separating between comparisons against HC and cross-pathology and DEG-based hierarchical clustering via heatmap.
 
-- **Relative abundance analysis:** Cell type proportions per sample and diagnostic group; pairwise Wilcoxon tests with BH correction
+- **Relative abundance analysis:** Cell type proportions per sample and diagnostic group; pairwise Wilcoxon tests with Benjamini–Hochberg correction
 - **Pseudobulk DEG analysis:** 
   - Counts aggregated by cell type × diagnosis × sample using `AggregateExpression`
   - All pairwise comparisons between diagnostic groups tested with DESeq2 via `FindMarkers`
@@ -82,47 +83,23 @@ This script performs all downstream analyses on the annotated object, including 
 
 **Output:** `Results/Final_Analyzed_Seurat_Object.rds`, `Results/DEGs_pseudobulk.xlsx`
 
-
-## 3. Data exploration and visualization
-
-| Figure | Script | Description |
-|---|---|---|
-| Pre/Post-QC violin plots | Part 1 | QC metric distributions before and after filtering |
-| Elbow plot | Part 1 | Variance explained by PCA components |
-| UMAP pre-integration | Part 1 | Batch effect visualization by pool |
-| Integration UMAPs | Part 1 | Harmony, RPCA and FastMNN comparison |
-| SingleR / Azimuth UMAPs | Part 2 | Automatic annotation results |
-| DotPlot canonical markers | Part 2 | Manual annotation validation |
-| Combined annotation UMAP | Part 2 | Clusters, cell types and diagnosis |
-| Relative abundance barplot | Part 3 | Cell type proportions by diagnosis |
-| Venn diagrams | Part 3 | Shared/exclusive DEGs by lineage |
-| Sample-level heatmaps | Part 3 | Z-score DEG expression across 16 samples |
-
-
-## 4. Workflow
+## 3. Workflow
 
 <p align="center">
   <img src="Workflow.jpg" width="55%">
 </p>
 
-
 ## 5. Dependencies
 
-### R version
-```
-R >= 4.5.2
-```
+The pipeline relies on standard R versioning (R >= 4.5.2) and several R packages for the single-cell analysis.
 
-### Packages
-
-| Category | Packages |
-|---|---|
-| Single-cell analysis | `Seurat >= 5.5.0`, `SeuratWrappers`, `scDblFinder >= 2.0.3` |
-| Batch correction | `batchelor` (FastMNN) |
-| Annotation | `SingleR`, `celldex`, `Azimuth` |
-| Differential expression | `DESeq2` |
-| Visualization | `ggplot2`, `pheatmap`, `ggvenn`, `patchwork`, `ggpubr` |
-| Utilities | `tidyverse`, `openxlsx`, `lisi`, `future` |
+The following packages are essential for the execution of the R scripts in this repository:
+- Single-cell analysis: *Seurat*, *SeuratWrappers*, *scDblFinder*
+- Batch correction: *batchelor*, *lisi*
+- Cell Type Annotation: *SingleR*, *celldex*, *Azimuth*
+- Differential expression: *DESeq2*
+- Visualization: *ggplot2*, *pheatmap*, *ggvenn*, *patchwork*, *ggpubr*
+- Utilities: *tidyverse*, *openxlsx*, *future*
 
 ### Installation
 
@@ -132,10 +109,12 @@ install.packages(c("Seurat", "ggplot2", "tidyverse", "openxlsx",
                    "patchwork", "ggvenn", "ggpubr", "pheatmap"))
 
 # Bioconductor
+if (!require("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 BiocManager::install(c("scDblFinder", "SingleR", "celldex",
                        "DESeq2", "batchelor"))
 
 # GitHub
+if (!require("remotes", quietly = TRUE)) install.packages("remotes")
 remotes::install_github("satijalab/seurat-wrappers")
 remotes::install_github("satijalab/azimuth")
 remotes::install_github("immunogenomics/lisi")
