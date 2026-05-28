@@ -45,7 +45,7 @@ This script loads the count matrices obtained from Cell Ranger and performs all 
 
 **Output:** `Results/Integrated_Seurat_Object.rds`
 
-### Part 2 — Cell Type Annotation
+### Part 2: Cell Type Annotation
 
 **Script:** `scripts/Part_2_Cell_Type_Annotation.Rmd`
 
@@ -65,7 +65,7 @@ This script annotates the cell clusters identified in Part 1 using a combination
 **Output:** `Results/Final_Annotated_Seurat_Object.rds`
 
 
-### Part 3 — Downstream Analysis
+### Part 3: Downstream Analysis
 
 **Script:** `scripts/Part_3_Downstream_Analysis.Rmd`
 
