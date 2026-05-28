@@ -13,11 +13,11 @@ For each sample, these files are read into R using `Read10X()` from Seurat.
 
 R Analysis is organized into three stages to ensure reproducibility:
 
-1. Preprocessing, Quality Control and Integration: rigorous quality filtering ($nFeature$, $nCount$, mitochondrial/hemoglobin pertentage content) and doublet removal. Then, to remove technical bath effect due to the processing pools, RPCA method was used after comparing the 3 different methods (harmony, RPCA and FastMMN) using LISI package.
+1. Preprocessing, Quality Control and Integration: rigorous quality filtering ($nFeature$, $nCount$, mitochondrial/hemoglobin percentage content) and doublet removal. Then, to remove technical batch effect due to the processing pools, RPCA method was used after comparing the 3 different methods (harmony, RPCA and FastMNN) using LISI package.
 2. Cell Type Annotation: Automatic cell-type annotation via SingleR and Azimuth, validated by canonical marker gene expression through `FindAllMarkers()` seurat's function.
 3. Downstream Analysis: Pseudobulk differential expression analysis using DESeq2 to identify disease-specific signatures, lineage-based Venn diagram generation, and hierarchical clustering based on differential expressed genes for each lineage of individual samples.
 
-Within each script there is information about the functions of each section, as well as the parameters and filters applied. For a better understanding of the steps and tools used, refer to the [[Workflow](Workflow.jpg)]
+Within each script there is information about the functions of each section, as well as the parameters and filters applied. For a better understanding of the steps and tools used, refer to the [Workflow](Workflow.jpg).
 
 ## Author
 [@mariaguillen09](https://www.github.com/mariaguillen09)
