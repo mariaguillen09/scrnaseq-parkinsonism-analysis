@@ -23,7 +23,7 @@ Within each script there is information about the functions of each section, as 
 [@mariaguillen09](https://www.github.com/mariaguillen09)
 
 
-## `R` Analysis Scripts
+## R Analysis Scripts
 
 ### Part 1 — Preprocessing, Quality Control and Batch Integration
 
