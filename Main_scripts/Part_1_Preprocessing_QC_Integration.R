@@ -1,3 +1,4 @@
+
 # ==============================================================================
 # Script: Part_1_Preprocessing_QC_Integration.R
 # Project: Single-cell transcriptomic profiling of peripheral immune cells in 
@@ -228,30 +229,40 @@ for (id in names(seurat_pre_qc)) {
   # Run doublet detection
   sce <- scDblFinder(sce)
   
-  # Add doublet information back to Seurat object
-  seurat_pre_qc[[id]]$doublet_class <- sce$scDblFinder.class
-  seurat_pre_qc[[id]]$doublet_score <- sce$scDblFinder.score
+  seurat_pre_qc[[id]] <- RenameCells(seurat_pre_qc[[id]], 
+  new.names = paste0(id, "_", colnames(seurat_pre_qc[[id]])))
   
   n_doublets <- sum(sce$scDblFinder.class == "doublet")
-  cat(sprintf("  %s: %d doublets detected (%.1f%%)\n", 
-              id, n_doublets, 
-              (n_doublets / ncol(seurat_pre_qc[[id]])) * 100))
+  cat(sprintf("  %s: %d doublets detected\n", 
+              id, n_doublets))
+  
+  # Add doublet information back to Seurat object
+  seurat_pre_qc[[id]]$doublet_class <- sce$scDblFinder.class
 }
+
+todas_las_etiquetas <- unlist(lapply(seurat_pre_qc, function(x) x$doublet_class), 
+                              use.names = FALSE)
+names(todas_las_etiquetas) <- unlist(lapply(seurat_pre_qc, function(x) colnames(x)), 
+                                     use.names = FALSE)
+
+obj_filtered$doublet_class <- todas_las_etiquetas[colnames(obj_filtered)]
 
 # Filter out doublets from the QC-filtered object
 obj_filtered <- subset(obj_filtered, subset = doublet_class == "singlet")
 
 cat(sprintf("  Total cells after doublet removal: %d\n", ncol(obj_filtered)))
-cat(sprintf("  Cumulative cells removed: %d (%.1f%% of original)\n", 
-            total_cells_initial - ncol(obj_filtered),
-            (1 - ncol(obj_filtered)/total_cells_initial) * 100))
+table(obj_filtered$diagnosis)
+cat(sprintf("  Cumulative cells retained: %d (%.1f%% of original)\n", 
+            ncol(obj_filtered),
+            (ncol(obj_filtered)/total_cells_initial) * 100))
 
 ### 3. Normalization, Feature Selection and Dimensionality Reduction
 
 # Now that we have high-quality cells, we prepare the data for analysis by: 
 # 1. Normalizing counts to account for sequencing depth differences 
 # 2. Finding highly variable genes (features with biological signal) 
-# 3. Scaling the data 4. Running PCA for dimensionality reduction
+# 3. Scaling the data 
+# 4. Running PCA for dimensionality reduction
 
 ## 3.1 Prepare RNA Layers
 
@@ -321,8 +332,6 @@ obj_filtered <- ScaleData(obj_filtered)
 
 # PCA
 obj_filtered <- RunPCA(obj_filtered)
-
-cat("PCA computed\n")
 
 # Optimal number of PCs based on variance explained
 stdevs <- obj_filtered[["pca"]]@stdev
