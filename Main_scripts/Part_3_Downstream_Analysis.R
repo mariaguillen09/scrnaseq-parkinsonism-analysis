@@ -96,8 +96,6 @@ abundance_plot <- ggplot(
         axis.title.x = element_text(size = 20, face = "bold", margin = margin(r = 10)),
         axis.text.x = element_text(color = "black", size = 20, face = "bold", angle = 45, hjust = 1),
         axis.text.y = element_text(color = "black", size = 20),
-        
-        # Leyenda: Más grande para que el texto sea claro
         legend.title = element_text(size = 18, face = "bold"),
         legend.text = element_text(size = 18),
         legend.position = "right",
@@ -441,12 +439,12 @@ lineages <- list(
 ## 4.2 Heatmap function
 make_heatmap <- function(obj, df, celltypes_seurat, celltypes_table, lineage_name, outfile) {
   
-  # 1. Extraer genes
+  # Extract significant genes
   genes_sig <- df %>% filter(cell_type %in% celltypes_table) %>% pull(gene) %>% unique()
   
   if (length(genes_sig) < 2) return(invisible(NULL))
   
-  # 2. Pseudobulk y Normalización
+  # Pseudobulk aggregation and normalization
   Idents(obj) <- "final_annotation"
   pb <- AggregateExpression(subset(obj, idents = celltypes_seurat), 
                             group.by = "id_tecnico", assays = "RNA", 
@@ -454,21 +452,20 @@ make_heatmap <- function(obj, df, celltypes_seurat, celltypes_table, lineage_nam
   pb <- NormalizeData(pb, normalization.method = "LogNormalize", 
                       scale.factor = 10000, verbose = FALSE)
   
-  # 3. Preparar matriz
+  # Prepare expression matrix and apply Z-score scaling
   exp_mat <- as.matrix(GetAssayData(pb, assay = "RNA", layer = "data")
                        [intersect(genes_sig, rownames(pb)), ])
   z_mat   <- t(scale(t(exp_mat)))
   
-  # Limitar valores extremos para el color
   z_mat[z_mat > 2] <- 2; z_mat[z_mat < -2] <- -2
   
-  # 4. Metadatos de columnas
+  # Build column metadata for annotation
   muestras <- colnames(z_mat)
   sample_meta <- data.frame(Diagnosis = factor(sample_diagnosis[muestras], 
                  levels = c("HC", "sporadic-PD", "Genetic-PD", "PSP")),
                  row.names = muestras)
   
-  # 5. Plot
+  # Plot
   pheatmap(
     mat = z_mat, color = heatmap_colors, scale = "none", breaks = seq(-2, 2, 
     length.out = 101), cluster_cols = TRUE, clustering_distance_cols = "correlation", 
