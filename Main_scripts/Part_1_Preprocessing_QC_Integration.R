@@ -374,7 +374,7 @@ batch_effect_plot <- DimPlot(
   ggtitle("UMAP: Batch Effect (Pre-Integration)")
 
 ggsave(
-  filename = "Figures/05_UMAP_PreBatch.png", 
+  filename = "Figures/05_UMAP_Pre_Integration.png", 
   plot = batch_effect_plot, 
   width = 10, 
   height = 8, 
