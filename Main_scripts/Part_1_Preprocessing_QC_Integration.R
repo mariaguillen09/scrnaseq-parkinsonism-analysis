@@ -369,7 +369,7 @@ obj_filtered <- RunUMAP(
 batch_effect_plot <- DimPlot(
   obj_filtered, 
   reduction = "umap", 
-  group.by = "pool"
+  group.by = "pool", raster = FALSE
 ) + 
   ggtitle("UMAP: Batch Effect (Pre-Integration)")
 
